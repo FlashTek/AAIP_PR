@@ -38,7 +38,7 @@ def plot_data(splitted_data, key, label, n_col, n_row):
     if len(axes.shape) == 1:
         axes = axes.reshape((1, -1))
 
-    f.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.9, wspace=0.14, hspace=0.09)
+    f.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.9, wspace=0.20, hspace=0.09)
     for i in range(len(splitted_data)):
         plot_data = splitted_data[i]
         for triple in plot_data:
@@ -62,7 +62,7 @@ def plot_data(splitted_data, key, label, n_col, n_row):
     axes[-1, 0].text(75.0, -0.20, r"Epoch")
 
     plt.title("")
-    plt.legend(bbox_to_anchor=(-5.0, 2.12, 6.5, .102), loc=3,
+    plt.legend(bbox_to_anchor=(-5.0, 2.12, 6.25, .102), loc=3,
             ncol=5, mode="expand", borderaxespad=0.)
 
     plt.savefig("batch_size_learning_rate.pdf")
@@ -75,7 +75,7 @@ def plot_data2(splitted_data, key, label, n_col, n_row):
     if len(axes.shape) == 1:
         axes = axes.reshape((1, -1))
 
-    f.subplots_adjust(left=0.125, bottom=0.12, right=0.9, top=0.79, wspace=0.14, hspace=0.09)
+    f.subplots_adjust(left=0.125, bottom=0.12, right=0.9, top=0.79, wspace=0.16, hspace=0.09)
     for i in range(len(splitted_data)):
         plot_data = splitted_data[i]
         for triple in plot_data:
@@ -98,7 +98,7 @@ def plot_data2(splitted_data, key, label, n_col, n_row):
     axes[0, 0].text(60.0, -0.15, r"Epoch")
 
     plt.title("")
-    plt.legend(bbox_to_anchor=(-4.0, 1.05, 5.5, .102), loc=3,
+    plt.legend(bbox_to_anchor=(-3.6, 1.05, 4.7, .102), loc=3,
             ncol=5, mode="expand", borderaxespad=0.)
 
     plt.savefig("learning_rate_batch_size.pdf")
