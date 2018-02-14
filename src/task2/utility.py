@@ -3,7 +3,7 @@ import numpy as np
 import urllib.request
 import os.path
 
-def load_data(one_hot_encoding=True):
+def load_data(reshape=False, one_hot_encoding=True):
     """
         Loads the MNIST data set using the keras library, normalizes the images from [0,255]->[0,1].
         The labels can be one hot encoded.
@@ -27,8 +27,9 @@ def load_data(one_hot_encoding=True):
     x_train = x_train / 255.0
     x_test = x_test / 255.0
 
-    #x_train = x_train.reshape((-1, 28*28))
-    #x_test = x_test.reshape((-1, 28*28))
+    if reshape:
+        x_train = x_train.reshape((-1, 28*28))
+        x_test = x_test.reshape((-1, 28*28))
 
     if one_hot_encoding:
         y_train = one_hot(y_train, 10)
@@ -52,9 +53,9 @@ def one_hot(x, n_classes):
 
     return x_oh
 
-def get_test_score(net, x_test, y_test):
+def get_network_loss(net, x_test, y_test):
     """"
-        Calculates the score of the network on the test data set.
+        Calculates the loss of the network on the test data set.
 
         parameters:
             net - Network, network to be evaluated
@@ -62,7 +63,7 @@ def get_test_score(net, x_test, y_test):
             y_test - array, one hot encoded output data
 
         returns:
-            float - test score
+            float - network's loss
     """
 
     #calculate the prediction
