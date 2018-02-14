@@ -22,7 +22,7 @@ def load_data(reshape=False, one_hot_encoding=True):
     #load the data set
     files = np.load("dataset.npz")
 
-    x_train, y_train, x_test, y_test = [files[x] for x in ["x_train", "y_train", "x_train", "y_train"]] 
+    x_train, y_train, x_test, y_test = [files[x] for x in ["x_train", "y_train", "x_test", "y_test"]] 
 
     x_train = x_train / 255.0
     x_test = x_test / 255.0

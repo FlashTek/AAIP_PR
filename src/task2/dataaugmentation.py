@@ -49,17 +49,17 @@ def perform_train_evaluation(x_train, y_train, x_test, y_test):
     #initialize the network
     net = Network(28*28, 10)
 
-    def get_test_score():
-        return ut.get_test_score(net, x_test, y_test)
+    def get_test_loss():
+        return ut.get_network_loss(net, x_test, y_test)
 
-    def get_train_score():
-        return ut.get_test_score(net, x_train, y_train)
+    def get_train_loss():
+        return ut.get_network_loss(net, x_train, y_train)
 
-    print("network initialized - test score: {0}".format(get_test_score()))
+    print("network initialized - test score: {0}".format(get_test_loss()))
 
     #store the development of the loss as a function of the epoch here
-    epoch_train_trajectory = [get_train_score()]
-    epoch_test_trajectory = [get_test_score()]
+    epoch_train_trajectory = [get_train_loss()]
+    epoch_test_trajectory = [get_test_loss()]
 
     for epoch in range(epochs):
         #shuffle data randomly
@@ -75,8 +75,8 @@ def perform_train_evaluation(x_train, y_train, x_test, y_test):
                     eta=learning_rate)
 
         #store the loss
-        epoch_train_trajectory.append(get_train_score())
-        epoch_test_trajectory.append(get_test_score())
+        epoch_train_trajectory.append(get_train_loss())
+        epoch_test_trajectory.append(get_test_loss())
         print("epoch {0} finished - test score: {1}".format(epoch, epoch_test_trajectory[-1]))
 
     return epoch_train_trajectory, epoch_test_trajectory
