@@ -1,3 +1,11 @@
+"""
+    Test the infleunce of the hyperparameters of the network by trying different values for the batch size and the learning rate
+
+    Creates a pickled file called "result.pkl" which can be analyzed by calling
+        python analyze.py
+    to create plots. This file contains the used batch size, learning rate, the elapsed time and the development of the trainin & test loss over time
+"""
+
 from network import Network
 import utility as ut
 import numpy as np
@@ -61,7 +69,7 @@ for i, batch_size in enumerate(batch_sizes):
             x_train = x_train[p]
             y_train = y_train[p]
 
-            #loop through data se
+            #loop through data set
             for batch in range(n_batches):
                 #perform SGD
                 net.fit(x_train[batch*batch_size:(batch+1)*batch_size],

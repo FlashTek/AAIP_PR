@@ -1,4 +1,13 @@
-#analyze the result
+"""
+    analyzes the result with have been obtained by executing
+
+    for the influence of the hyperparameters:
+        python gridsearch.py
+
+    and for the robustness test:
+        python dataaugmentation.py
+"""
+
 import pickle
 import numpy as np
 
@@ -10,17 +19,32 @@ font = {'family':'serif','size':11}
 plt.rc('font',**font)
 
 def analyze_gridsearch():
+    """
+        Analyzes the results of the gridsearch, i.e. the influence of the hyperparameters
+    """
+
+    #load the data
     data = None
     with open("result.pkl", "rb") as f:
         data = pickle.load(f)
 
     def split(lst, key):
+        """
+            Splits the data and creates new sub groups either sorted by the batch size or the learning rate (key)
+
+            parameters:
+                key - int, the id to sort the lis tby
+
+            returns:
+                list - list of sorted groups
+        """
+
         sorted_lst = sorted(lst, key=lambda x:x[key])
 
         result = []
-        current_sub_list = [sorted_lst[0]]
+        current_sub_list = []
         for i in range(len(sorted_lst)):
-            if sorted_lst[i][key] == current_sub_list[-1][key]:
+            if len(current_sub_list) == 0 or sorted_lst[i][key] == current_sub_list[-1][key]:
                 current_sub_list.append(sorted_lst[i])
             else:
                 result.append(current_sub_list)
@@ -29,11 +53,23 @@ def analyze_gridsearch():
             result.append(current_sub_list)
         return result
 
+    #split the data up
     split_batch_size = split(data, 0)
     split_learning_rate = split(data, 1)
 
-
     def plot_data_by_batch_size(splitted_data, key, label, loss_mode, n_col, n_row):
+        """
+            Plots the losses seperated by the batch size and then by the learning rate
+
+            parameters:
+                splitted_data - array, data to be plotted
+                key - int, 
+                loss_mode - string, either Training or Test
+                n_col - int, indicates the arangement of the subplots
+                n_row - int, indicates the arangement of the subplots
+        """
+
+        #prepare the plots
         f, axes = plt.subplots(n_row, n_col, sharex=False, sharey='row')
         f.set_size_inches(6.29, 3.54)
         
@@ -48,11 +84,12 @@ def analyze_gridsearch():
                 splitted_data.remove(splitted_data[i])
                 break
 
+        #plot the data
         for i in range(len(splitted_data)):
             plot_data = splitted_data[i]
             for triple in plot_data:
                 axes[i//n_col, i%n_col].plot(triple[3+loss_mode], label=label.format(triple[key]))
-
+               
             axes[i//n_col, i%n_col].set_xlim(0, 30)
             if i < n_col:
                 labels = [item.get_text() for item in axes[0, i].get_xticklabels()]
@@ -74,10 +111,22 @@ def analyze_gridsearch():
         plt.legend(bbox_to_anchor=(-5.0, 2.12, 6.25, .102), loc=3,
                 ncol=5, mode="expand", borderaxespad=0.)
 
-        plt.savefig("batch_size_learning_rate_{0}.pdf".format("train" if loss_mode == 0 else "test"))
+        plt.savefig("results/batch_size_learning_rate_{0}.pdf".format("train" if loss_mode == 0 else "test"))
         plt.show()
 
     def plot_data_by_eta(splitted_data, key, label, loss_mode, n_col, n_row):
+        """
+            Plots the losses seperated by the learning rate and then by the batch size
+
+            parameters:
+                splitted_data - array, data to be plotted
+                key - int, 
+                loss_mode - string, either Training or Test
+                n_col - int, indicates the arangement of the subplots
+                n_row - int, indicates the arangement of the subplots
+        """
+
+        #prepare the plots
         f, axes = plt.subplots(n_row, n_col, sharex=False, sharey='row')
         f.set_size_inches(6.29, 3.54)
         
@@ -85,14 +134,16 @@ def analyze_gridsearch():
             axes = axes.reshape((1, -1))
 
         f.subplots_adjust(left=0.125, bottom=0.12, right=0.9, top=0.79, wspace=0.16, hspace=0.09)
+        
+        #plot the data
         for i in range(len(splitted_data)):
             plot_data = splitted_data[i]
+            
             for triple in plot_data:
                 if triple[key] == 800:
                     continue
-
                 axes[i//n_col, i%n_col].plot(triple[3+loss_mode], label=label.format(triple[key]))
-
+                
             axes[i//n_col, i%n_col].set_xlim(0, 30)
         
             axes[0, i].set_xticks([0.0, 15, 30])
@@ -110,37 +161,67 @@ def analyze_gridsearch():
         plt.legend(bbox_to_anchor=(-4.8, 1.05, 6.0, .102), loc=3,
                 ncol=5, mode="expand", borderaxespad=0.)
 
-        plt.savefig("learning_rate_batch_size_{0}.pdf".format("train" if loss_mode == 0 else "test"))
+        plt.savefig("results/learning_rate_batch_size_{0}.pdf".format("train" if loss_mode == 0 else "test"))
         plt.show()
 
-    #plot_data_by_batch_size(split_batch_size, 1, r"$\eta = {0}$", 0, 5, 2)
-    #plot_data_by_eta(split_learning_rate, 0, r"$n = {0}$", 0, 5, 1)
+    #plot the data
+    plot_data_by_batch_size(split_batch_size, 1, r"$\eta = {0}$", 0, 5, 2)
+    plot_data_by_eta(split_learning_rate, 0, r"$n = {0}$", 0, 5, 1)
 
-    #plot_data_by_batch_size(split_batch_size, 1, r"$\eta = {0}$", 1, 5, 2)
-    #plot_data_by_eta(split_learning_rate, 0, r"$n = {0}$", 1, 5, 1)
+    plot_data_by_batch_size(split_batch_size, 1, r"$\eta = {0}$", 1, 5, 2)
+    plot_data_by_eta(split_learning_rate, 0, r"$n = {0}$", 1, 5, 1)
 
-    for i in range(11):
-        for j in range(5):
-            a = np.array(split_batch_size[i][j][3])
-            b = np.array(split_batch_size[i][j][4])
+    def plot_training_time():
+        #plots the average training time as a function of the batch size n
+        avg_times = []
+        avg_err_times = []
+        batch_sizes = []
+        for i in range(len(split_batch_size)):
+            times = [x[2] for x in split_batch_size[i]]
+            avg_times.append(np.mean(times)/30)
+            avg_err_times.append(np.std(times)/30)
+            batch_sizes.append(split_batch_size[i][0][0])
 
-            c = a-b
-            print(np.mean(c))
+        plt.figure(figsize=(6.29, 3.54))
+        plt.plot(batch_sizes, avg_times, color="C1", ls="--")
+        plt.errorbar(batch_sizes, avg_times, yerr=avg_err_times, fmt=".", color="C1", capsize=2, label="Time")
+        plt.legend()
+        plt.ylabel("Training Time per Epoch [s]")
+        plt.xlabel("Batch Size")
+        plt.savefig("results/training_time_epoch.pdf")
+        plt.show()
+
+    plot_training_time()
 
 def analyze_robustness():
+    """
+        Plots the training/test loss for the different network architectures used to examine the influence of noise
+    """
+
+    #load the data
     data = None
     with open("total_data.pkl", "rb") as f:
         data = pickle.load(f)
 
-    for j, filename in [(0, "train"), (1, "test")]:
-        labels = ["Benchmark", "Noisy Test Data", "Noisy (closed) Test Data", "Noisy Train Data", "Noisy (closed) Train and Test Data"]
+    #prepare the plots
+    f, axes = plt.subplots(1, 2, sharex=False)
+    f.set_size_inches(6.29, 3.54)
+    f.subplots_adjust(left=0.125, bottom=0.11, right=0.9, top=0.9, wspace=0.05, hspace=0.20)
+    axes[1].set_yticks([])
+    axes[1] = axes[1].twinx()
 
+    #plot the functions
+    for j, ylabel in [(0, "Training Loss"), (1, "Test Loss")]:
         for i in range(len(data)):
-            plt.plot(data[i][j], label=labels[i])
-        plt.legend()
-        plt.xlabel("Epoch")
-        plt.ylabel("Loss")
-        plt.savefig("robustness_comparison_{0}.pdf".format(filename))
-        plt.show()
+            axes[j].plot(data[i][j], label="$N_{0}$".format(i))
+        
+        axes[j].set_ylabel(ylabel)
 
+    axes[0].text(30, -0.065, r"Epoch")
+    plt.legend(bbox_to_anchor=(-0.8, 1.0125, 1.5, .102), loc=3,
+                ncol=5, mode="expand", borderaxespad=0.)
+    plt.savefig("results/robustness_comparison.pdf")
+    plt.show()
+
+analyze_gridsearch()
 analyze_robustness()

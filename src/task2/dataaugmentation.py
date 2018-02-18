@@ -1,3 +1,11 @@
+"""
+    Test the robustness of the network by applying noise and morphological operations
+
+    Creates a pickled file called "total_data.pkl" which can be analyzed by calling
+        python analyze.py
+    to create plots
+"""
+
 from network import Network
 import utility as ut
 import numpy as np
