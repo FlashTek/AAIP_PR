@@ -1,4 +1,4 @@
-# AAIP_Pattern_Recognition
+# Advanced Algorithms in Physics - Pattern Recognition I
 
 Source code of the project "Pattern Recognition I" for the lecture "Advanced Algorithms in Physics"
 
@@ -11,5 +11,6 @@ Each folder contains a subfolder called "results" in which the most important pl
 The source code has been tested on Python 3.6.3. Additionally to the default packages of python, this project also needs numpy, scipy, matplotlib and PIL to be working.
 
 Authors:
+
     - Roland Zimmermann
     - Philip Dietrich
