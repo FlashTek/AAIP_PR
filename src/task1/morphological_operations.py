@@ -1,7 +1,5 @@
 # morphological operations
-#
-#
-#
+
 
 import numpy as np
 
@@ -19,8 +17,8 @@ def to_structuring_array(SE):
             numpy array of indices
     """
     # todo: correct error handeling
-    if SE.shape.length != 2:
-        print ( "in to_structuring_array: structuring element should have two dimensions")
+    if len(SE.shape) != 2:
+        raise ValueError( "in to_structuring_array: structuring element should have two dimensions")
 
 
     struc_array = []
@@ -34,8 +32,7 @@ def to_structuring_array(SE):
     return struc_array
 
 
-def dilation(I, SE):
-    # todo: maybe add option for boundary mode
+def dilation(I, SE, boundary_mode = 'padding'):
     """
         dilation:
             performs morphological dilation of image I with structuring
@@ -43,30 +40,35 @@ def dilation(I, SE):
         parameters:
             I  - image to perform dilation on as 2D numpy array
             SE - structuring element for dilation as 2D numpy array
+            boundary_mode - 'padding' or  rescaling ('crop') size of output
         returns
-            dilated image as numpy array
+            dilated image as numpy array with size either same as input or cropped
+            according to structuing element
     """
 
-    # todo: error handeling
+    if boundary_mode != 'padding' and boundary_mode != 'crop':
+        raise ValueError("only 'padding' and 'crop' allowed as boundary mode")
 
     struct_array = to_structuring_array(SE)
-    I_dil = I.copy()
-
     mx = int(SE.shape[0]/2)
     my = int(SE.shape[1]/2)
 
-    I_ = np.zeros([I.shape[0] + mx*2, I.shape[1] + my*2 ])
-    I_[mx:-mx, my:-my] = I.copy()
+    if boundary_mode == 'padding':
+        I_dil = I.copy()
+        I_ = np.zeros([I.shape[0] +2* mx, I.shape[1] + 2*my ])
+        I_[mx:-mx, my:-my] = I.copy()
+
+    elif boundary_mode == 'crop':
+        I_dil = np.zeros((I.shape[0] -2* mx, I.shape[1] - 2*my ))
+        I_ = I.copy()
 
     for x in range(I_dil.shape[0]):
-        for y in range(I_dil.shape[1]-1, -1, -1):
-            I_dil[x,y] = np.max([I_[x + i + mx ,y + j + my] for [i,j] in struct_array])
+        for y in range(I_dil.shape[1]):
+            I_dil[x,y] = np.max([I_[x + i + mx ,y + j +my] for [i,j] in struct_array])
 
     return I_dil
 
-def erosion(I, SE):
-
-    # todo: option for boundary mode
+def erosion(I, SE, boundary_mode = 'padding'):
 
     """
         erosion:
@@ -75,26 +77,32 @@ def erosion(I, SE):
         parameters:
             I  - image to perform erosion on as 2D numpy array
             SE - structuring element for erosion as 2D numpy array
+            boundary_mode - 'padding' or  rescaling ('crop') size of output
         returns
-            eroded image as numpy array
+            eroded image as numpy array with size either same as input or cropped 
+            according to structuing element
     """
 
 
-    # todo: test for correctness of input
+    if boundary_mode != 'padding' and boundary_mode != 'crop':
+        raise ValueError("only 'padding' and 'crop' allowed as boundary mode")
 
     struct_array = to_structuring_array(SE)
-
-    # zero padding:
     mx = int(SE.shape[0]/2)
     my = int(SE.shape[1]/2)
 
-    I_ero = I.copy()
+    if boundary_mode == 'padding':
+        I_ero = I.copy()
+        I_ = np.zeros([I.shape[0] + mx*2, I.shape[1] + my*2 ])
+        I_[mx:-mx, my:-my] = I.copy()
 
-    I_ = np.zeros([I.shape[0] + mx*2, I.shape[1] + my*2 ])
-    I_[mx:-mx, my:-my] = I.copy()
+    elif boundary_mode == 'crop':
+        I_ero = np.zeros((I.shape[0] - 2*mx, I.shape[1] - 2*my ))
+        I_ = I.copy()
+
 
     for x in range(I_ero.shape[0]):
-        for y in range(I_ero.shape[1]-1, -1, -1):
+        for y in range(I_ero.shape[1]):
           I_ero[x,y] = np.min([I_[x + i + mx ,y + j + my] for [i,j] in struct_array])
 
     return I_ero
@@ -133,7 +141,7 @@ def closing(I,SE):
             closed image as numpy array
     """
     # todo: boundary mode + error handeling
-    return dilation(erosion(I,SE), SE)
+    return dilation(erosion(I,SE, 'crop'), SE, 'crop')
 
 
 def opening(I,SE):
@@ -150,4 +158,4 @@ def opening(I,SE):
     """
         # todo: boundary mode + error handeling
 
-    return erosion(dilation(I,SE), SE)
+    return erosion(dilation(I,SE, 'crop'), SE, 'crop')
