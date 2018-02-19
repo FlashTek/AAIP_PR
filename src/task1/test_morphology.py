@@ -54,11 +54,11 @@ for se, name  in zip([square, cross, circle], ["square", "cross", "circle"]):
 
 fig_mg.subplots_adjust(wspace = 0.01, left = 0.01, right= 0.99)
 #save the image
-fig_mg.savefig("morphological_gradient.pdf")
+fig_mg.savefig("results/morphological_gradient.pdf")
 
 fig_cl.subplots_adjust(wspace = 0.01, left = 0.01, right= 0.99)
 #save the image
-fig_cl.savefig("morphological_closing.pdf")
+fig_cl.savefig("results/morphological_closing.pdf")
 
 fig_ed, ax_ed = plt.subplots(3,1, figsize = (figsize[0]/3 , figsize[1] * 1.7))
 
@@ -71,6 +71,6 @@ for a in ax_ed:
 fig_ed.subplots_adjust(hspace = 0.02, top = 0.99, bottom = 0.01, right = 0.98, left = 0.02)
 
 #save the resulting image
-fig_ed.savefig("er_dil.pdf")
+fig_ed.savefig("results/er_dil.pdf")
 
 plt.show()

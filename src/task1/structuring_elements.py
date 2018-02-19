@@ -21,6 +21,7 @@ def cross(size):
         returns:
             numpy array - binary structuring element with cross shape
     """
+
     cross_ = np.zeros((size, size))
     cross_[int(size/2),: ] = 1
     cross_[:,int(size/2)] = 1
@@ -52,6 +53,7 @@ def hline(size):
         returns:
             numpy array - binary structuring element with horizontal line
     """
+    
     hline = np.zeros((size, size))
     hline[int(size/2),:] = 1
     return hline

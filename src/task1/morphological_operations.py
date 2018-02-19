@@ -4,7 +4,6 @@
 import numpy as np
 
 def to_structuring_array(SE):
-
     """
         to_structuring_array:
             structuring element is given as a matrix, this function turns it
@@ -16,10 +15,12 @@ def to_structuring_array(SE):
         returns:
             numpy array of indices
     """
-    # todo: correct error handeling
-    if len(SE.shape) != 2:
-        raise ValueError( "in to_structuring_array: structuring element should have two dimensions")
 
+    #check the validity of the SE input
+    if type(SE) is not np.ndarray:
+        raise ValueError("The SE has to be a 2D numpy array")
+    if len(SE.shape) != 2:
+        raise ValueError("The SE has to be a 2D numpy array")
 
     struc_array = []
     m_x = int(SE.shape[0]/2)
@@ -46,6 +47,18 @@ def dilation(I, SE, boundary_mode = 'padding'):
             according to structuing element
     """
 
+    #check the validity of the SE input
+    if type(SE) is not np.ndarray:
+        raise ValueError("The SE has to be a 2D numpy array")
+    if len(SE.shape) != 2:
+        raise ValueError("The SE has to be a 2D numpy array")
+
+    #check the validity of the SI input
+    if type(I) is not np.ndarray:
+        raise ValueError("The image I has to be a 2D numpy array")
+    if len(I.shape) != 2:
+        raise ValueError("The image I has to be a 2D numpy array")
+
     if boundary_mode != 'padding' and boundary_mode != 'crop':
         raise ValueError("only 'padding' and 'crop' allowed as boundary mode")
 
@@ -69,7 +82,6 @@ def dilation(I, SE, boundary_mode = 'padding'):
     return I_dil
 
 def erosion(I, SE, boundary_mode = 'padding'):
-
     """
         erosion:
             performs morphological erosion of image I with structuring
@@ -83,6 +95,17 @@ def erosion(I, SE, boundary_mode = 'padding'):
             according to structuing element
     """
 
+    #check the validity of the SE input
+    if type(SE) is not np.ndarray:
+        raise ValueError("The SE has to be a 2D numpy array")
+    if len(SE.shape) != 2:
+        raise ValueError("The SE has to be a 2D numpy array")
+
+    #check the validity of the SI input
+    if type(I) is not np.ndarray:
+        raise ValueError("The image I has to be a 2D numpy array")
+    if len(I.shape) != 2:
+        raise ValueError("The image I has to be a 2D numpy array")
 
     if boundary_mode != 'padding' and boundary_mode != 'crop':
         raise ValueError("only 'padding' and 'crop' allowed as boundary mode")
@@ -109,7 +132,6 @@ def erosion(I, SE, boundary_mode = 'padding'):
 
 
 def morphological_gradient(I, SE, rescale= True):
-
     """
         morphological_gradient:
             Performs morphological gradient operation on input image I. This
@@ -120,6 +142,18 @@ def morphological_gradient(I, SE, rescale= True):
             SE - structuring element for erosion and dilation as numpy array
             rescale - True (default) if greyscale values should be rescaled
     """
+
+    #check the validity of the SE input
+    if type(SE) is not np.ndarray:
+        raise ValueError("The SE has to be a 2D numpy array")
+    if len(SE.shape) != 2:
+        raise ValueError("The SE has to be a 2D numpy array")
+
+    #check the validity of the SI input
+    if type(I) is not np.ndarray:
+        raise ValueError("The image I has to be a 2D numpy array")
+    if len(I.shape) != 2:
+        raise ValueError("The image I has to be a 2D numpy array")
 
     mg = dilation(I, SE) -  erosion(I, SE)
     if rescale:
@@ -140,7 +174,18 @@ def closing(I,SE):
         returns
             closed image as numpy array
     """
-    # todo: boundary mode + error handeling
+    #check the validity of the SE input
+    if type(SE) is not np.ndarray:
+        raise ValueError("The SE has to be a 2D numpy array")
+    if len(SE.shape) != 2:
+        raise ValueError("The SE has to be a 2D numpy array")
+
+    #check the validity of the SI input
+    if type(I) is not np.ndarray:
+        raise ValueError("The image I has to be a 2D numpy array")
+    if len(I.shape) != 2:
+        raise ValueError("The image I has to be a 2D numpy array")
+
     return dilation(erosion(I,SE, 'crop'), SE, 'crop')
 
 
@@ -156,6 +201,17 @@ def opening(I,SE):
         returns
             opened image as numpy array
     """
-        # todo: boundary mode + error handeling
+
+    #check the validity of the SE input
+    if type(SE) is not np.ndarray:
+        raise ValueError("The SE has to be a 2D numpy array")
+    if len(SE.shape) != 2:
+        raise ValueError("The SE has to be a 2D numpy array")
+
+    #check the validity of the SI input
+    if type(I) is not np.ndarray:
+        raise ValueError("The image I has to be a 2D numpy array")
+    if len(I.shape) != 2:
+        raise ValueError("The image I has to be a 2D numpy array")
 
     return erosion(dilation(I,SE, 'crop'), SE, 'crop')

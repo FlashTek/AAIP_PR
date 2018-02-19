@@ -20,7 +20,7 @@ dpi = 150
 
 #gaussian noise example
 #creates a black image with gaussian noise
-to_denoise = np.zeros((100, 100))  + np.random.randn(100,100)
+to_denoise = np.zeros((100, 100)) + np.random.randn(100,100)
 
 #create one white horizontal bar
 to_denoise[50:] = to_denoise[50:] + 10
@@ -55,7 +55,7 @@ for a in ax:
      a.axis('off')
 
 #uncomment this line to save the output
-#fig.savefig("closing_gauss.pdf")
+#fig.savefig("results/closing_gauss.pdf")
 
 #create second example
 #create empty image with horizontal bar
@@ -90,6 +90,6 @@ for a in ax1:
     a.axis('off')
 
 #save the resulting image
-fig1.savefig("sp_noise_example.pdf")
+fig1.savefig("results/sp_noise_example.pdf")
 
 plt.show()
